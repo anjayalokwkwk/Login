@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login to View Gallery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root {
+            --primary: #4361ee;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --bg: linear-gradient(135deg, #667eea, #764ba2);
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .login-header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .login-header h2 {
+            font-weight: 600;
+        }
+
+        .form-box {
+            padding: 25px 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-group label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 6px;
+            color: var(--dark);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 38px;
+            color: #adb5bd;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #3a56d4;
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #dc3545;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .gallery {
+            display: none;
+            max-height: 100vh;
+            overflow-y: scroll;
+            padding: 20px;
+            background: #111;
+        }
+
+        .gallery img {
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media(max-width: 480px) {
+            .form-box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="loginContainer">
+    <div class="login-header">
+        <h2>Login to View Gallery</h2>
+    </div>
+    <form class="form-box" id="loginForm">
+        <div class="input-group">
+            <label for="username">Username</label>
+            <i class="fas fa-user"></i>
+            <input type="text" id="username" placeholder="Username" required>
+        </div>
+        <div class="input-group">
+            <label for="password">Password</label>
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="Password" required>
+        </div>
+        <button type="submit" class="btn">Login</button>
+        <div class="error-message" id="errorMessage">Username atau password salah!</div>
+    </form>
+</div>
+
+<div class="gallery" id="galleryContainer"></div>
+
+<script>
+    const galleryContainer = document.getElementById("galleryContainer");
+    const loginContainer = document.getElementById("loginContainer");
+    const errorMessage = document.getElementById("errorMessage");
+
+    const images = [
+    "https://i.ibb.co/KKvbYSq/DSC9273.png",
+    "https://i.ibb.co/pZ2SLbv/DSC9276.png",
+    "https://i.ibb.co/JRZGgvc/DSC9280.png",
+    "https://i.ibb.co/4KhjcBL/DSC9289.png",
+    "https://i.ibb.co/ZWSvztM/DSC9293.png",
+    "https://i.ibb.co/9NdMBBM/DSC9295.png",
+    "https://i.ibb.co/p452zVC/DSC9304.png",
+    "https://i.ibb.co/B4SVtLv/DSC9325.png",
+    "https://i.ibb.co/gg8drnr/DSC9334.png",
+    "https://i.ibb.co/pLkQ0Wx/DSC9348.png",
+    "https://i.ibb.co/9yh1KFx/DSC9365.png",
+    "https://i.ibb.co/pPTbY40/DSC9373.png",
+    "https://i.ibb.co/JjFXFLL/DSC9374.png",
+    "https://i.ibb.co/kcWQWY8/DSC9389.png",
+    "https://i.ibb.co/stbxcKJ/DSC9410.png",
+    "https://i.ibb.co/tHy42xj/DSC9430.png",
+    "https://i.ibb.co/KGPgHQh/DSC9433.png",
+    "https://i.ibb.co/bzsCBWz/DSC9443.png",
+    "https://i.ibb.co/DKqdcV3/DSC9449.png",
+    "https://i.ibb.co/1vbghw2/DSC9455.png",
+    "https://i.ibb.co/68R5pwS/DSC9472.png",
+    "https://i.ibb.co/wB7Qscx/DSC9491.png",
+    "https://i.ibb.co/D5FjBM4/DSC9552.png",
+    "https://i.ibb.co/ZW8RF2g/DSC9567.png",
+    "https://i.ibb.co/8YL24QR/DSC9569.png",
+    "https://i.ibb.co/bb4prW2/DSC9579.png",
+    "https://i.ibb.co/DrCN489/DSC9597.png",
+    "https://i.ibb.co/7pLFGQP/DSC9618.png",
+    "https://i.ibb.co/C73NF3m/DSC9639.png",
+    "https://i.ibb.co/28smK9t/DSC9645.png",
+    "https://iili.io/JFEVFDJ.md.jpg",
+    "https://iili.io/JFEV2Ag.md.jpg",
+    "https://iili.io/JFEV3Na.md.jpg",
+    "https://iili.io/JFEVfov.md.jpg",
+    "https://iili.io/JFEVBPp.md.jpg",
+    "https://iili.io/JFEVxSt.md.jpg",
+    "https://iili.io/JFEVolI.md.jpg",
+    "https://iili.io/JFEVnKN.md.jpg",
+    "https://iili.io/JFEV7V4.md.jpg",
+    "https://iili.io/JFEVYil.md.jpg",
+    "https://iili.io/JFEVcf2.md.jpg",
+    "https://iili.io/JFEVllS.md.jpg",
+    "https://iili.io/JFEVEJ9.md.jpg",
+    "https://iili.io/JFEVMOu.md.jpg",
+    "https://iili.io/JFEVVDb.md.jpg",
+    "https://iili.io/JFEVGRe.md.jpg",
+    "https://iili.io/JFEVeUP.md.jpg",
+    "https://iili.io/JFEVO0B.md.jpg",
+    "https://iili.io/JFEV85F.md.jpg",
+    "https://iili.io/JFEVvJ1.md.jpg",
+    "https://iili.io/JFEV4Wv.md.jpg",
+    "https://iili.io/JFEV6sR.md.jpg",
+    "https://iili.io/JFEVifp.md.jpg",
+    "https://iili.io/JFEVs0N.md.jpg",
+    "https://iili.io/JFEVt5X.md.jpg",
+    "https://iili.io/JFEVbbs.md.jpg",
+    "https://iili.io/JFEVDen.md.jpg",
+    "https://iili.io/JFEVpzG.md.jpg",
+    "https://iili.io/JFEVyXf.md.jpg",
+    "https://iili.io/JFEWJql.md.jpg",
+    "https://iili.io/JFEWd12.md.jpg",
+    "https://iili.io/JFEW2gS.md.jpg",
+    "https://iili.io/JFEWqmu.md.jpg",
+    "https://iili.io/JFEWCzb.md.jpg",
+    "https://iili.io/JFEWnXj.md.jpg",
+    "https://iili.io/JFEWzqQ.md.jpg",
+    "https://iili.io/JFEWAdP.md.jpg",
+    "https://iili.io/JFEWR71.md.jpg",
+    "https://iili.io/JFEW5kF.md.jpg",
+    "https://iili.io/JFEW7mg.md.jpg",
+    "https://iili.io/JFEWlLv.md.jpg"
+];
+
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const user = document.getElementById("username").value;
+        const pass = document.getElementById("password").value;
+
+        if (user === "alok" && pass === "alok12") {
+            loginContainer.style.display = "none";
+            galleryContainer.style.display = "block";
+            images.forEach(url => {
+                const img = document.createElement("img");
+                img.src = url;
+                galleryContainer.appendChild(img);
+            });
+        } else {
+            errorMessage.style.display = "block";
+        }
+    });
+</script>
+</body>
+  </html>
